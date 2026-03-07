@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrustBite QR Code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef3f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 550px;
+            margin: 60px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        #qrcode {
+            margin: 25px auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        button, a.download-btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            background: #007bff;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .secondary {
+            background: #28a745;
+        }
+
+        #qrText {
+            margin-top: 15px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        function generateQR() {
+            const productId = localStorage.getItem("trustbiteProductId") || "";
+
+            const displayURL =
+                "https://madhubrahmankar.github.io/product-qr-project/display.html?id=" +
+                encodeURIComponent(productId);
+
+            new QRCode(document.getElementById("qrcode"), {
+                text: displayURL,
+                width: 220,
+                height: 220
+            });
+
+            document.getElementById("qrText").innerHTML =
+                "<a href='" + displayURL + "' target='_blank'>" + displayURL + "</a>";
+
+            setTimeout(function () {
+                const qrImage = document.querySelector("#qrcode img");
+                const qrCanvas = document.querySelector("#qrcode canvas");
+
+                if (qrImage) {
+                    document.getElementById("downloadLink").href = qrImage.src;
+                } else if (qrCanvas) {
+                    document.getElementById("downloadLink").href = qrCanvas.toDataURL("image/png");
+                }
+            }, 500);
+        }
+
+        function addAnotherProduct() {
+            window.location.href = "index.html";
+        }
+
+        function goToJourneyPage() {
+            window.location.href = "journey.html";
+        }
+    </script>
+</head>
+<body onload="generateQR()">
+
+<div class="container">
+    <h2>TrustBite QR Code Generated</h2>
+
+    <div id="qrcode"></div>
+    <p id="qrText"></p>
+
+    <a id="downloadLink" class="download-btn" download="trustbite-qr.png">Download QR Code</a>
+    <button class="secondary" onclick="addAnotherProduct()">Add Another Product</button>
+    <button onclick="goToJourneyPage()">Log Journey Event</button>
+</div>
+
+</body>
+</html>
