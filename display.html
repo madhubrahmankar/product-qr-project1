@@ -63,7 +63,7 @@
         async function loadProduct() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get("id");
-            const scriptURL = "https://script.google.com/macros/s/AKfycbwcIESdIpu9pKr11JdtOEdu3to3-VGdBke0JbaC4NV-2MPx32O3oky6hE69iEaaIgqw/exec";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbyfIxjlble3Fiqd67nD6aN-O7T7FTwVbMVyYGlHy4Obtd0STo--rhXAEYnQEaGZFVnK/exec";
 
             try {
                 const response = await fetch(scriptURL + "?action=getProduct&id=" + encodeURIComponent(productId));
