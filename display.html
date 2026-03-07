@@ -84,65 +84,69 @@
     </style>
 
     <script>
-        async function loadProduct() {
-            const params = new URLSearchParams(window.location.search);
-            const productId = params.get("id");
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3yE0CKy845xkTJhPFIWAdBEcvpXf5YrAxBObUDv2E2p4PlElH-0Gr8IAbhmDe31gZ/exec";
 
-            const scriptURL = "Phttps://script.google.com/macros/s/AKfycbxfB-LX99Typy9ZIJ4jyJ3KkPquvTJTHVyrKc-gEgUV_6NutQurlg4wCCaNp5RKgAnE/exec";
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("id") || "";
+        }
+
+        function handleProductResponse(result) {
+            if (result.status === "success" && result.product) {
+                document.getElementById("productId").innerText = result.product.productId || "";
+                document.getElementById("productName").innerText = result.product.productName || "";
+                document.getElementById("batchId").innerText = result.product.batchId || "";
+                document.getElementById("manufacturerName").innerText = result.product.manufacturerName || "";
+                document.getElementById("facilityLocation").innerText = result.product.facilityLocation || "";
+                document.getElementById("productDescription").innerText = result.product.productDescription || "";
+                document.getElementById("price").innerText = result.product.price || "";
+                document.getElementById("contactInfo").innerText = result.product.contactInfo || "";
+
+                const journeyTable = document.getElementById("journeyTableBody");
+                const noJourneyMessage = document.getElementById("noJourneyMessage");
+
+                journeyTable.innerHTML = "";
+
+                if (result.journeys && result.journeys.length > 0) {
+                    noJourneyMessage.style.display = "none";
+
+                    result.journeys.forEach(function(journey) {
+                        const row = document.createElement("tr");
+                        row.innerHTML =
+                            "<td>" + (journey.stage || "") + "</td>" +
+                            "<td>" + (journey.date || "") + "</td>" +
+                            "<td>" + (journey.time || "") + "</td>" +
+                            "<td>" + (journey.nfcTagId || "") + "</td>" +
+                            "<td>" + (journey.operator || "") + "</td>" +
+                            "<td>" + (journey.notes || "") + "</td>";
+                        journeyTable.appendChild(row);
+                    });
+                } else {
+                    noJourneyMessage.style.display = "block";
+                }
+            } else {
+                document.body.innerHTML = "<div class='message'>Product not found.</div>";
+            }
+        }
+
+        function loadProduct() {
+            const productId = getProductId();
 
             if (!productId) {
                 document.body.innerHTML = "<div class='message'>Product ID is missing in the URL.</div>";
                 return;
             }
 
-            try {
-                const response = await fetch(
-                    scriptURL + "?action=getProduct&id=" + encodeURIComponent(productId)
-                );
+            const script = document.createElement("script");
+            script.src = SCRIPT_URL +
+                "?action=getProduct&id=" + encodeURIComponent(productId) +
+                "&callback=handleProductResponse";
 
-                const result = await response.json();
-
-                if (result.status === "success" && result.product) {
-                    document.getElementById("productId").innerText = result.product.productId || "";
-                    document.getElementById("productName").innerText = result.product.productName || "";
-                    document.getElementById("batchId").innerText = result.product.batchId || "";
-                    document.getElementById("manufacturerName").innerText = result.product.manufacturerName || "";
-                    document.getElementById("facilityLocation").innerText = result.product.facilityLocation || "";
-                    document.getElementById("productDescription").innerText = result.product.productDescription || "";
-                    document.getElementById("price").innerText = result.product.price || "";
-                    document.getElementById("contactInfo").innerText = result.product.contactInfo || "";
-
-                    const journeyTable = document.getElementById("journeyTableBody");
-                    const noJourneyMessage = document.getElementById("noJourneyMessage");
-
-                    journeyTable.innerHTML = "";
-
-                    if (result.journeys && result.journeys.length > 0) {
-                        noJourneyMessage.style.display = "none";
-
-                        result.journeys.forEach(function(journey) {
-                            const row = document.createElement("tr");
-
-                            row.innerHTML =
-                                "<td>" + (journey.stage || "") + "</td>" +
-                                "<td>" + (journey.date || "") + "</td>" +
-                                "<td>" + (journey.time || "") + "</td>" +
-                                "<td>" + (journey.nfcTagId || "") + "</td>" +
-                                "<td>" + (journey.operator || "") + "</td>" +
-                                "<td>" + (journey.notes || "") + "</td>";
-
-                            journeyTable.appendChild(row);
-                        });
-                    } else {
-                        noJourneyMessage.style.display = "block";
-                    }
-                } else {
-                    document.body.innerHTML = "<div class='message'>Product not found.</div>";
-                }
-            } catch (error) {
-                console.error(error);
+            script.onerror = function() {
                 document.body.innerHTML = "<div class='message'>Error loading product details.</div>";
-            }
+            };
+
+            document.body.appendChild(script);
         }
     </script>
 </head>
