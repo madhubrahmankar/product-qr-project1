@@ -11,7 +11,7 @@
         }
 
         .container {
-            width: 550px;
+            width: 560px;
             margin: 50px auto;
             background: white;
             padding: 30px;
@@ -70,6 +70,8 @@
     </style>
 
     <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3yE0CKy845xkTJhPFIWAdBEcvpXf5YrAxBObUDv2E2p4PlElH-0Gr8IAbhmDe31gZ/exec";
+
         function generateProductId() {
             return "TB" + Date.now();
         }
@@ -89,8 +91,6 @@
                 return;
             }
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbxfB-LX99Typy9ZIJ4jyJ3KkPquvTJTHVyrKc-gEgUV_6NutQurlg4wCCaNp5RKgAnE/exec";
-
             const formData = new URLSearchParams();
             formData.append("action", "createProduct");
             formData.append("productId", productId);
@@ -103,14 +103,16 @@
             formData.append("contactInfo", contactInfo);
 
             try {
-                await fetch(scriptURL, {
+                await fetch(SCRIPT_URL, {
                     method: "POST",
                     body: formData,
                     mode: "no-cors"
                 });
 
                 localStorage.setItem("trustbiteProductId", productId);
-                window.location.href = "qr.html";
+                localStorage.setItem("trustbiteBatchId", batchId);
+
+                window.location.href = "qr.html?id=" + encodeURIComponent(productId);
             } catch (error) {
                 console.error(error);
                 alert("Error while creating product.");
