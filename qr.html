@@ -1,76 +1,231 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrustBite QR Code</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #eef3f8;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(169, 230, 187, 0.35), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 214, 165, 0.28), transparent 24%),
+                linear-gradient(180deg, #f6fbf5 0%, #eef8f1 42%, #f8fcf8 100%);
+            color: #1f3a2a;
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 100%;
+            padding: 36px 18px 60px;
         }
 
         .container {
-            width: 560px;
-            margin: 60px auto;
-            background: white;
-            padding: 35px;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            max-width: 760px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            box-shadow: 0 20px 55px rgba(46, 94, 61, 0.14);
+            overflow: hidden;
+            border: 1px solid rgba(121, 169, 104, 0.16);
+        }
+
+        .hero {
+            position: relative;
+            padding: 34px 34px 28px;
+            background: linear-gradient(135deg, #2f7d4a 0%, #68a357 52%, #f2b35d 100%);
+            color: white;
             text-align: center;
         }
 
-        h2 {
-            color: #1e3a5f;
-            margin-bottom: 20px;
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0));
+            pointer-events: none;
         }
 
-        #qrcode {
-            margin: 25px auto;
-            display: flex;
-            justify-content: center;
-        }
-
-        .button-group {
-            margin-top: 20px;
-        }
-
-        button, a.download-btn {
+        .brand-badge {
             display: inline-block;
-            margin: 10px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            background: #007bff;
-            font-size: 15px;
-            cursor: pointer;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.28);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+            margin-bottom: 16px;
         }
 
-        button:hover, a.download-btn:hover {
-            background: #005ecb;
+        .hero h1 {
+            margin: 0;
+            font-size: 36px;
+            line-height: 1.08;
+            font-weight: 700;
         }
 
-        .secondary {
-            background: #28a745;
-        }
-
-        .secondary:hover {
-            background: #1f7f35;
-        }
-
-        .note {
-            color: #555;
-            margin-top: 10px;
+        .hero p {
+            margin: 12px auto 0;
+            max-width: 560px;
+            color: rgba(255,255,255,0.92);
+            font-size: 16px;
             line-height: 1.6;
         }
 
+        .content {
+            padding: 34px;
+            text-align: center;
+        }
+
+        .success-card {
+            background: linear-gradient(135deg, #f3fbf3, #fff8ee);
+            border: 1px solid #e6f0e0;
+            border-radius: 22px;
+            padding: 24px 22px;
+            margin-bottom: 26px;
+        }
+
+        .success-title {
+            margin: 0;
+            font-size: 24px;
+            color: #24543a;
+        }
+
+        .success-subtitle {
+            margin: 10px auto 0;
+            max-width: 520px;
+            color: #5f7266;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .qr-shell {
+            margin: 26px auto 18px;
+            width: fit-content;
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 24px;
+            border: 1px solid #e7efe0;
+            box-shadow: 0 14px 32px rgba(62, 105, 66, 0.10);
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 220px;
+            min-height: 220px;
+        }
+
+        .note {
+            margin: 18px auto 8px;
+            max-width: 540px;
+            color: #53685a;
+            line-height: 1.65;
+            font-size: 15px;
+        }
+
+        .link-box {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: #fbfefb;
+            border: 1px solid #dfe9dc;
+        }
+
         #qrText {
-            margin-top: 15px;
-            word-break: break-all;
+            margin: 0;
+            word-break: break-word;
             font-size: 14px;
+            line-height: 1.6;
+        }
+
+        #qrText a {
+            color: #2d7a47;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #qrText a:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        button,
+        a.download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 54px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            box-shadow: 0 12px 28px rgba(72, 126, 67, 0.18);
+        }
+
+        button:hover,
+        a.download-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.02);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #2f7d4a 0%, #5fa04f 55%, #e6a34f 100%);
+        }
+
+        .secondary {
+            background: linear-gradient(135deg, #58a163 0%, #7bb35e 100%);
+        }
+
+        .journey-btn {
+            background: linear-gradient(135deg, #e19a45 0%, #d8892e 100%);
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            color: #718678;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                padding: 28px 22px 24px;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .content {
+                padding: 24px 20px 28px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .success-title {
+                font-size: 22px;
+            }
         }
     </style>
 
@@ -125,21 +280,48 @@
     </script>
 </head>
 <body onload="generateQR()">
+    <div class="page">
+        <div class="container">
+            <div class="hero">
+                <div class="brand-badge">Fresh Food Traceability</div>
+                <h1>TrustBite QR Ready</h1>
+                <p>
+                    Your product traceability code has been generated successfully and is ready
+                    for download, scanning, and journey-stage operations.
+                </p>
+            </div>
 
-<div class="container">
-    <h2>TrustBite QR Code Generated</h2>
+            <div class="content">
+                <div class="success-card">
+                    <h2 class="success-title">Product QR Code Generated</h2>
+                    <p class="success-subtitle">
+                        Scan this QR code to open the public TrustBite traceability page for this product.
+                    </p>
 
-    <div id="qrcode"></div>
+                    <div class="qr-shell">
+                        <div id="qrcode"></div>
+                    </div>
 
-    <p class="note">Scan this QR code to open the product traceability page.</p>
-    <p id="qrText"></p>
+                    <p class="note">
+                        This code helps customers view the registered product details and traceability information.
+                    </p>
 
-    <div class="button-group">
-        <a id="downloadLink" class="download-btn" download="trustbite-qr.png">Download QR Code</a>
-        <button class="secondary" onclick="addAnotherProduct()">Add Another Product</button>
-        <button onclick="goToJourneyPage()">Log Journey Event</button>
+                    <div class="link-box">
+                        <p id="qrText"></p>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a id="downloadLink" class="download-btn" download="trustbite-qr.png">Download QR Code</a>
+                    <button class="secondary" onclick="addAnotherProduct()">Add Another Product</button>
+                    <button class="journey-btn" onclick="goToJourneyPage()">Log Journey Event</button>
+                </div>
+
+                <div class="footer-note">
+                    Keep this QR code attached to the product or packaging for future traceability access.
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
 </body>
 </html>
