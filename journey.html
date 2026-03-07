@@ -1,119 +1,251 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrustBite Journey Logger</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(169, 230, 187, 0.35), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 214, 165, 0.28), transparent 24%),
+                linear-gradient(180deg, #f6fbf5 0%, #eef8f1 42%, #f8fcf8 100%);
+            color: #1f3a2a;
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 100%;
+            padding: 36px 18px 60px;
         }
 
         .container {
-            width: 560px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            max-width: 760px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            box-shadow: 0 20px 55px rgba(46, 94, 61, 0.14);
+            overflow: hidden;
+            border: 1px solid rgba(121, 169, 104, 0.16);
         }
 
-        h1 {
-            text-align: center;
-            color: #1e3a5f;
-            margin-bottom: 8px;
+        .hero {
+            position: relative;
+            padding: 34px 34px 28px;
+            background: linear-gradient(135deg, #2f7d4a 0%, #68a357 52%, #f2b35d 100%);
+            color: white;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 22px;
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.28);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 36px;
+            line-height: 1.08;
+            font-weight: 700;
+        }
+
+        .hero p {
+            margin: 12px 0 0;
+            max-width: 560px;
+            color: rgba(255,255,255,0.92);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 34px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 20px;
+            margin-bottom: 26px;
+        }
+
+        .readonly-card {
+            background: linear-gradient(180deg, #fbfefb 0%, #f6faf6 100%);
+            border: 1px solid #e1ecde;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 8px 18px rgba(67, 103, 66, 0.06);
         }
 
         .section {
-            margin-top: 24px;
-            padding-top: 18px;
-            border-top: 1px solid #e5e7eb;
+            margin-top: 26px;
+            padding: 24px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #f3fbf3, #fff8ee);
+            border: 1px solid #e7efe0;
+        }
+
+        .section-title {
+            margin: 0 0 6px;
+            font-size: 22px;
+            color: #24543a;
+        }
+
+        .section-subtitle {
+            margin: 0 0 18px;
+            color: #607261;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         label {
             display: block;
             margin-top: 14px;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #222;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #2d4d39;
+            font-size: 14px;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cfcfcf;
-            border-radius: 8px;
+            padding: 14px 15px;
+            border: 1px solid #d7e4d5;
+            border-radius: 14px;
             font-size: 15px;
-            box-sizing: border-box;
+            color: #20362a;
+            background: #fbfefb;
+            outline: none;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #98aa9a;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #68a357;
+            box-shadow: 0 0 0 4px rgba(104, 163, 87, 0.14);
+            background: #ffffff;
         }
 
         input[readonly] {
-            background: #f3f4f6;
-            color: #555;
+            background: #f2f6f1;
+            color: #55705d;
+            border-color: #dde8db;
         }
 
         textarea {
-            min-height: 90px;
+            min-height: 110px;
             resize: vertical;
+            line-height: 1.55;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 18px;
         }
 
         button {
             width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            background: #007bff;
-            color: white;
+            padding: 15px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 16px;
+            color: white;
             font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            box-shadow: 0 12px 28px rgba(72, 126, 67, 0.18);
         }
 
         button:hover {
-            background: #005ecb;
+            transform: translateY(-1px);
+            filter: brightness(1.02);
         }
 
-        .secondary-btn {
-            background: #10b981;
-            margin-top: 12px;
+        .save-operator-btn {
+            background: linear-gradient(135deg, #58a163 0%, #7bb35e 100%);
         }
 
-        .secondary-btn:hover {
-            background: #059669;
+        .submit-btn {
+            background: linear-gradient(135deg, #2f7d4a 0%, #5fa04f 55%, #e6a34f 100%);
         }
 
         .small-note {
-            margin-top: 8px;
-            color: #666;
+            margin-top: 10px;
+            color: #627465;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
+        }
+
+        .success-box,
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .success-box {
-            display: none;
-            margin-top: 20px;
-            padding: 14px;
-            border-radius: 8px;
             background: #ecfdf5;
             color: #065f46;
             border: 1px solid #a7f3d0;
         }
 
         .error-box {
-            display: none;
-            margin-top: 20px;
-            padding: 14px;
-            border-radius: 8px;
             background: #fef2f2;
             color: #991b1b;
             border: 1px solid #fecaca;
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                padding: 28px 22px 24px;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .content {
+                padding: 24px 20px 28px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 20px 18px;
+            }
         }
     </style>
 
@@ -199,7 +331,6 @@
                 localStorage.setItem("trustbiteOperatorName", operator);
 
                 showSuccess("Journey event recorded successfully.");
-
                 document.getElementById("notes").value = "";
             } catch (error) {
                 console.error(error);
@@ -226,45 +357,74 @@
     </script>
 </head>
 <body onload="loadJourneyPage()">
+    <div class="page">
+        <div class="container">
+            <div class="hero">
+                <div class="brand-badge">Fresh Food Operations</div>
+                <h1>TrustBite Journey Logger</h1>
+                <p>
+                    Record operational journey updates through the staff scan flow and maintain
+                    clean, transparent stage tracking for each registered product.
+                </p>
+            </div>
 
-<div class="container">
-    <h1>TrustBite Journey Logger</h1>
-    <div class="subtitle">Staff scan page opened from NFC tag</div>
+            <div class="content">
+                <div class="info-grid">
+                    <div class="readonly-card">
+                        <label for="productId">Product ID</label>
+                        <input type="text" id="productId" readonly>
+                    </div>
 
-    <label for="productId">Product ID</label>
-    <input type="text" id="productId" readonly>
+                    <div class="readonly-card">
+                        <label for="batchId">Batch ID</label>
+                        <input type="text" id="batchId" readonly>
+                    </div>
+                </div>
 
-    <label for="batchId">Batch ID</label>
-    <input type="text" id="batchId" readonly>
+                <div class="section">
+                    <h2 class="section-title">Operator Settings</h2>
+                    <p class="section-subtitle">
+                        Save the operator name once on this device so future journey logs can be recorded faster.
+                    </p>
 
-    <div class="section">
-        <label for="operator">Operator Name</label>
-        <input type="text" id="operator" placeholder="Enter operator name for this device">
-        <button type="button" class="secondary-btn" onclick="saveOperatorName()">Save Operator Name On This Device</button>
-        <div class="small-note">
-            Save once on each staff device. Next time it will fill automatically.
+                    <label for="operator">Operator Name</label>
+                    <input type="text" id="operator" placeholder="Enter operator name for this device">
+
+                    <div class="button-row">
+                        <button type="button" class="save-operator-btn" onclick="saveOperatorName()">Save Operator Name On This Device</button>
+                    </div>
+
+                    <div class="small-note">
+                        Once saved, this device will automatically fill the operator name the next time the page opens.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Journey Stage Update</h2>
+                    <p class="section-subtitle">
+                        Choose the current stage and add optional notes before recording the update.
+                    </p>
+
+                    <label for="stage">Stage</label>
+                    <select id="stage">
+                        <option value="Harvest">Harvest</option>
+                        <option value="Packed">Packed</option>
+                        <option value="Transported">Transported</option>
+                        <option value="Retail Shelf">Retail Shelf</option>
+                    </select>
+
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" placeholder="Optional notes"></textarea>
+
+                    <div class="button-row">
+                        <button type="button" class="submit-btn" onclick="logJourney()">Record Journey Event</button>
+                    </div>
+                </div>
+
+                <div id="successBox" class="success-box"></div>
+                <div id="errorBox" class="error-box"></div>
+            </div>
         </div>
     </div>
-
-    <div class="section">
-        <label for="stage">Stage</label>
-        <select id="stage">
-            <option value="Harvest">Harvest</option>
-            <option value="Packed">Packed</option>
-            <option value="Transported">Transported</option>
-            <option value="Retail Shelf">Retail Shelf</option>
-        </select>
-
-
-        <label for="notes">Notes</label>
-        <textarea id="notes" placeholder="Optional notes"></textarea>
-
-        <button type="button" onclick="logJourney()">OK</button>
-    </div>
-
-    <div id="successBox" class="success-box"></div>
-    <div id="errorBox" class="error-box"></div>
-</div>
-
 </body>
 </html>
