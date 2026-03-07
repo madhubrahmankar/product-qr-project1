@@ -1,85 +1,246 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrustBite Product Details</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f2f6fa;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(169, 230, 187, 0.35), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 214, 165, 0.28), transparent 24%),
+                linear-gradient(180deg, #f6fbf5 0%, #eef8f1 42%, #f8fcf8 100%);
+            color: #1f3a2a;
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 100%;
+            padding: 36px 18px 60px;
         }
 
         .container {
-            width: 760px;
-            margin: 50px auto;
-            background: white;
-            padding: 35px;
-            border-radius: 14px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+            max-width: 980px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            box-shadow: 0 20px 55px rgba(46, 94, 61, 0.14);
+            overflow: hidden;
+            border: 1px solid rgba(121, 169, 104, 0.16);
         }
 
-        h1 {
-            text-align: center;
-            color: #1e3a5f;
-            margin-bottom: 25px;
+        .hero {
+            position: relative;
+            padding: 36px 34px 30px;
+            background: linear-gradient(135deg, #2f7d4a 0%, #68a357 52%, #f2b35d 100%);
+            color: white;
         }
 
-        h2 {
-            margin-top: 35px;
-            color: #1e3a5f;
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.16);
+            border: 1px solid rgba(255,255,255,0.28);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 38px;
+            line-height: 1.08;
+            font-weight: 700;
+        }
+
+        .hero p {
+            margin: 12px 0 0;
+            max-width: 620px;
+            color: rgba(255,255,255,0.92);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 34px;
+        }
+
+        .section-heading {
+            margin: 0 0 8px;
+            font-size: 24px;
+            color: #24543a;
+        }
+
+        .section-subtitle {
+            margin: 0 0 26px;
+            color: #617362;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 20px;
         }
 
         .item {
-            margin-bottom: 18px;
+            background: linear-gradient(180deg, #fbfefb 0%, #f6faf6 100%);
+            border: 1px solid #e1ecde;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 8px 18px rgba(67, 103, 66, 0.06);
+        }
+
+        .item.full {
+            grid-column: 1 / -1;
         }
 
         .label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            color: #333;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #2d4d39;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .value {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
             font-size: 16px;
-            color: #111;
-            line-height: 1.5;
+            color: #183123;
+            line-height: 1.65;
+            word-break: break-word;
+        }
+
+        .journey-section {
+            margin-top: 34px;
+            padding: 26px 24px 24px;
+            background: linear-gradient(135deg, #f3fbf3, #fff8ee);
+            border: 1px solid #e7efe0;
+            border-radius: 24px;
+        }
+
+        .journey-title {
+            margin: 0;
+            font-size: 24px;
+            color: #24543a;
+        }
+
+        .journey-subtitle {
+            margin: 10px 0 0;
+            color: #627465;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .empty-note {
+            margin-top: 18px;
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.72);
+            border-radius: 16px;
+            border: 1px solid #e4ece0;
+            color: #5c6f60;
+            line-height: 1.6;
+        }
+
+        .table-wrap {
+            margin-top: 22px;
+            overflow-x: auto;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e4ece0;
+            box-shadow: 0 10px 24px rgba(75, 111, 70, 0.08);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            min-width: 720px;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
+        th,
+        td {
+            padding: 14px 14px;
             text-align: left;
             vertical-align: top;
+            border-bottom: 1px solid #edf2ea;
         }
 
         th {
-            background: #eaf1f8;
+            background: #f7fbf5;
+            color: #30543a;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+        }
+
+        td {
+            color: #2d4232;
+            font-size: 15px;
+            line-height: 1.55;
+        }
+
+        tbody tr:hover {
+            background: #fcfefb;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .message-shell {
+            max-width: 760px;
+            margin: 80px auto;
+            padding: 22px;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 16px 38px rgba(46, 94, 61, 0.12);
+            border: 1px solid rgba(121, 169, 104, 0.16);
         }
 
         .message {
             text-align: center;
-            margin-top: 80px;
             font-size: 22px;
-            color: #444;
+            color: #355340;
+            line-height: 1.5;
         }
 
-        .empty-note {
-            margin-top: 15px;
-            padding: 14px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            color: #555;
+        @media (max-width: 860px) {
+            .hero {
+                padding: 28px 22px 24px;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .content {
+                padding: 24px 20px 28px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journey-section {
+                padding: 22px 18px 20px;
+            }
         }
     </style>
 
@@ -124,7 +285,7 @@
                     noJourneyMessage.style.display = "block";
                 }
             } else {
-                document.body.innerHTML = "<div class='message'>Product not found.</div>";
+                document.body.innerHTML = "<div class='message-shell'><div class='message'>Product not found.</div></div>";
             }
         }
 
@@ -132,7 +293,7 @@
             const productId = getProductId();
 
             if (!productId) {
-                document.body.innerHTML = "<div class='message'>Product ID is missing in the URL.</div>";
+                document.body.innerHTML = "<div class='message-shell'><div class='message'>Product ID is missing in the URL.</div></div>";
                 return;
             }
 
@@ -142,7 +303,7 @@
                 "&callback=handleProductResponse";
 
             script.onerror = function() {
-                document.body.innerHTML = "<div class='message'>Error loading product details.</div>";
+                document.body.innerHTML = "<div class='message-shell'><div class='message'>Error loading product details.</div></div>";
             };
 
             document.body.appendChild(script);
@@ -150,69 +311,92 @@
     </script>
 </head>
 <body onload="loadProduct()">
+    <div class="page">
+        <div class="container">
+            <div class="hero">
+                <div class="brand-badge">Fresh Food Transparency</div>
+                <h1>TrustBite Traceability Details</h1>
+                <p>
+                    View the registered product identity, origin information, and journey-stage
+                    updates that support clean and reliable food traceability.
+                </p>
+            </div>
 
-<div class="container">
-    <h1>TrustBite Traceability Details</h1>
+            <div class="content">
+                <h2 class="section-heading">Product Overview</h2>
+                <p class="section-subtitle">
+                    This section presents the main identification and source information linked to the product.
+                </p>
 
-    <div class="item">
-        <span class="label">Product ID</span>
-        <div id="productId" class="value"></div>
+                <div class="details-grid">
+                    <div class="item">
+                        <span class="label">Product ID</span>
+                        <div id="productId" class="value"></div>
+                    </div>
+
+                    <div class="item">
+                        <span class="label">Product Name</span>
+                        <div id="productName" class="value"></div>
+                    </div>
+
+                    <div class="item">
+                        <span class="label">Batch ID</span>
+                        <div id="batchId" class="value"></div>
+                    </div>
+
+                    <div class="item">
+                        <span class="label">Manufacturer Name</span>
+                        <div id="manufacturerName" class="value"></div>
+                    </div>
+
+                    <div class="item">
+                        <span class="label">Facility Location</span>
+                        <div id="facilityLocation" class="value"></div>
+                    </div>
+
+                    <div class="item">
+                        <span class="label">Price</span>
+                        <div id="price" class="value"></div>
+                    </div>
+
+                    <div class="item full">
+                        <span class="label">Product Description</span>
+                        <div id="productDescription" class="value"></div>
+                    </div>
+
+                    <div class="item full">
+                        <span class="label">Contact Info</span>
+                        <div id="contactInfo" class="value"></div>
+                    </div>
+                </div>
+
+                <div class="journey-section">
+                    <h2 class="journey-title">Journey Details</h2>
+                    <p class="journey-subtitle">
+                        These records show how the product moved through the fresh food chain across different operational stages.
+                    </p>
+
+                    <div id="noJourneyMessage" class="empty-note" style="display:none;">
+                        No journey records have been added yet.
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Stage</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Operator</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="journeyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="item">
-        <span class="label">Product Name</span>
-        <div id="productName" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Batch ID</span>
-        <div id="batchId" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Manufacturer Name</span>
-        <div id="manufacturerName" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Facility Location</span>
-        <div id="facilityLocation" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Product Description</span>
-        <div id="productDescription" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Price</span>
-        <div id="price" class="value"></div>
-    </div>
-
-    <div class="item">
-        <span class="label">Contact Info</span>
-        <div id="contactInfo" class="value"></div>
-    </div>
-
-    <h2>Journey Details</h2>
-
-    <div id="noJourneyMessage" class="empty-note" style="display:none;">
-        No journey records have been added yet.
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Stage</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Operator</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody id="journeyTableBody"></tbody>
-    </table>
-</div>
-
 </body>
 </html>
