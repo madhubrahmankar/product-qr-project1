@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrustBite Product Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 550px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a5f;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cfcfcf;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005ecb;
+        }
+    </style>
+
+    <script>
+        async function submitData() {
+            const productName = document.getElementById("productName").value;
+            const batchId = document.getElementById("batchId").value;
+            const manufacturerName = document.getElementById("manufacturerName").value;
+            const facilityLocation = document.getElementById("facilityLocation").value;
+            const productDescription = document.getElementById("productDescription").value;
+            const price = document.getElementById("price").value;
+            const contactInfo = document.getElementById("contactInfo").value;
+
+            const scriptURL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+
+            const formData = new URLSearchParams();
+            formData.append("action", "createProduct");
+            formData.append("productName", productName);
+            formData.append("batchId", batchId);
+            formData.append("manufacturerName", manufacturerName);
+            formData.append("facilityLocation", facilityLocation);
+            formData.append("productDescription", productDescription);
+            formData.append("price", price);
+            formData.append("contactInfo", contactInfo);
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    localStorage.setItem("trustbiteProductId", result.productId);
+                    window.location.href = "qr.html";
+                } else {
+                    alert("Product could not be created.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error while creating product.");
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h1>TrustBite</h1>
+    <p>Create a new traceable product record</p>
+
+    <label>Product Name</label>
+    <input type="text" id="productName">
+
+    <label>Batch ID</label>
+    <input type="text" id="batchId">
+
+    <label>Manufacturer Name</label>
+    <input type="text" id="manufacturerName">
+
+    <label>Facility Location</label>
+    <input type="text" id="facilityLocation">
+
+    <label>Product Description</label>
+    <textarea id="productDescription"></textarea>
+
+    <label>Price</label>
+    <input type="text" id="price">
+
+    <label>Contact Info</label>
+    <input type="text" id="contactInfo">
+
+    <button onclick="submitData()">Create Product</button>
+</div>
+
+</body>
+</html>
