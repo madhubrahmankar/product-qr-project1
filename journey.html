@@ -22,7 +22,19 @@
         h1 {
             text-align: center;
             color: #1e3a5f;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 22px;
+        }
+
+        .section {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #e5e7eb;
         }
 
         label {
@@ -30,6 +42,7 @@
             margin-top: 14px;
             margin-bottom: 6px;
             font-weight: bold;
+            color: #222;
         }
 
         input, select, textarea {
@@ -41,8 +54,14 @@
             box-sizing: border-box;
         }
 
+        input[readonly] {
+            background: #f3f4f6;
+            color: #555;
+        }
+
         textarea {
-            min-height: 80px;
+            min-height: 90px;
+            resize: vertical;
         }
 
         button {
@@ -60,21 +79,82 @@
         button:hover {
             background: #005ecb;
         }
+
+        .secondary-btn {
+            background: #10b981;
+            margin-top: 12px;
+        }
+
+        .secondary-btn:hover {
+            background: #059669;
+        }
+
+        .small-note {
+            margin-top: 8px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .success-box {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
     </style>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1iCS3BwIQgTgNdmfTckwCAccO5ku5yJVfi-u8OuHW2WZd6tz3mPv8RTvaMFDlFITy/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3yE0CKy845xkTJhPFIWAdBEcvpXf5YrAxBObUDv2E2p4PlElH-0Gr8IAbhmDe31gZ/exec";
 
-        function fillProductInfo() {
+        function getUrlParam(name) {
             const params = new URLSearchParams(window.location.search);
-            const productId = params.get("id") || localStorage.getItem("trustbiteProductId") || "";
-            const batchId = params.get("batchId") || localStorage.getItem("trustbiteBatchId") || "";
+            return params.get(name) || "";
+        }
+
+        function loadJourneyPage() {
+            const productId = getUrlParam("id");
+            const batchId = getUrlParam("batchId");
 
             document.getElementById("productId").value = productId;
             document.getElementById("batchId").value = batchId;
+
+            const savedOperator = localStorage.getItem("trustbiteOperatorName") || "";
+            document.getElementById("operator").value = savedOperator;
+
+            if (!productId) {
+                showError("Product ID is missing in the NFC link.");
+            }
+        }
+
+        function saveOperatorName() {
+            const operatorName = document.getElementById("operator").value.trim();
+
+            if (!operatorName) {
+                alert("Please enter the operator name first.");
+                return;
+            }
+
+            localStorage.setItem("trustbiteOperatorName", operatorName);
+            alert("Operator name saved on this device.");
         }
 
         async function logJourney() {
+            hideMessages();
+
             const productId = document.getElementById("productId").value.trim();
             const batchId = document.getElementById("batchId").value.trim();
             const stage = document.getElementById("stage").value;
@@ -82,8 +162,23 @@
             const operator = document.getElementById("operator").value.trim();
             const notes = document.getElementById("notes").value.trim();
 
-            if (!productId || !batchId || !stage || !nfcTagId || !operator) {
-                alert("Please fill in Product ID, Batch ID, Stage, NFC Tag ID, and Operator.");
+            if (!productId) {
+                showError("Product ID is missing.");
+                return;
+            }
+
+            if (!batchId) {
+                showError("Batch ID is missing.");
+                return;
+            }
+
+            if (!stage) {
+                showError("Please choose the stage.");
+                return;
+            }
+
+            if (!operator) {
+                showError("Please enter the operator name.");
                 return;
             }
 
@@ -103,46 +198,77 @@
                     mode: "no-cors"
                 });
 
-                alert("Journey event recorded successfully.");
+                localStorage.setItem("trustbiteOperatorName", operator);
+
+                showSuccess("Journey event recorded successfully.");
+
                 document.getElementById("nfcTagId").value = "";
-                document.getElementById("operator").value = "";
                 document.getElementById("notes").value = "";
             } catch (error) {
                 console.error(error);
-                alert("Error while recording journey event.");
+                showError("Error while recording journey event.");
             }
+        }
+
+        function showSuccess(message) {
+            const box = document.getElementById("successBox");
+            box.innerText = message;
+            box.style.display = "block";
+        }
+
+        function showError(message) {
+            const box = document.getElementById("errorBox");
+            box.innerText = message;
+            box.style.display = "block";
+        }
+
+        function hideMessages() {
+            document.getElementById("successBox").style.display = "none";
+            document.getElementById("errorBox").style.display = "none";
         }
     </script>
 </head>
-<body onload="fillProductInfo()">
+<body onload="loadJourneyPage()">
 
 <div class="container">
     <h1>TrustBite Journey Logger</h1>
+    <div class="subtitle">Staff scan page opened from NFC tag</div>
 
     <label for="productId">Product ID</label>
-    <input type="text" id="productId" placeholder="Enter product ID">
+    <input type="text" id="productId" readonly>
 
     <label for="batchId">Batch ID</label>
-    <input type="text" id="batchId" placeholder="Enter batch ID">
+    <input type="text" id="batchId" readonly>
 
-    <label for="stage">Stage</label>
-    <select id="stage">
-        <option value="Harvest">Harvest</option>
-        <option value="Packed">Packed</option>
-        <option value="Transported">Transported</option>
-        <option value="Retail Shelf">Retail Shelf</option>
-    </select>
+    <div class="section">
+        <label for="operator">Operator Name</label>
+        <input type="text" id="operator" placeholder="Enter operator name for this device">
+        <button type="button" class="secondary-btn" onclick="saveOperatorName()">Save Operator Name On This Device</button>
+        <div class="small-note">
+            Save once on each staff device. Next time it will fill automatically.
+        </div>
+    </div>
 
-    <label for="nfcTagId">NFC Tag ID</label>
-    <input type="text" id="nfcTagId" placeholder="Enter NFC tag ID">
+    <div class="section">
+        <label for="stage">Stage</label>
+        <select id="stage">
+            <option value="Harvest">Harvest</option>
+            <option value="Packed">Packed</option>
+            <option value="Transported">Transported</option>
+            <option value="Retail Shelf">Retail Shelf</option>
+        </select>
 
-    <label for="operator">Operator</label>
-    <input type="text" id="operator" placeholder="Enter operator name">
+        <label for="nfcTagId">NFC Tag ID</label>
+        <input type="text" id="nfcTagId" placeholder="Optional tag code or label">
 
-    <label for="notes">Notes</label>
-    <textarea id="notes" placeholder="Optional notes"></textarea>
+        <label for="notes">Notes</label>
+        <textarea id="notes" placeholder="Optional notes"></textarea>
 
-    <button onclick="logJourney()">Record Journey Event</button>
+        <button type="button" onclick="logJourney()">OK</button>
+    </div>
+
+    <div id="successBox" class="success-box"></div>
+    <div id="errorBox" class="error-box"></div>
 </div>
 
 </body>
