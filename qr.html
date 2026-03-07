@@ -12,7 +12,7 @@
         }
 
         .container {
-            width: 550px;
+            width: 560px;
             margin: 60px auto;
             background: white;
             padding: 35px;
@@ -21,16 +21,25 @@
             text-align: center;
         }
 
+        h2 {
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+
         #qrcode {
             margin: 25px auto;
             display: flex;
             justify-content: center;
         }
 
+        .button-group {
+            margin-top: 20px;
+        }
+
         button, a.download-btn {
             display: inline-block;
             margin: 10px;
-            padding: 12px 22px;
+            padding: 12px 20px;
             border: none;
             border-radius: 8px;
             text-decoration: none;
@@ -40,8 +49,22 @@
             cursor: pointer;
         }
 
+        button:hover, a.download-btn:hover {
+            background: #005ecb;
+        }
+
         .secondary {
             background: #28a745;
+        }
+
+        .secondary:hover {
+            background: #1f7f35;
+        }
+
+        .note {
+            color: #555;
+            margin-top: 10px;
+            line-height: 1.6;
         }
 
         #qrText {
@@ -52,8 +75,18 @@
     </style>
 
     <script>
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("id") || localStorage.getItem("trustbiteProductId") || "";
+        }
+
         function generateQR() {
-            const productId = localStorage.getItem("trustbiteProductId") || "";
+            const productId = getProductId();
+
+            if (!productId) {
+                document.body.innerHTML = "<div style='text-align:center;margin-top:80px;font-family:Arial;'>Product ID not found.</div>";
+                return;
+            }
 
             const displayURL =
                 "https://madhubrahmankar.github.io/product-qr-project1/display.html?id=" +
@@ -85,7 +118,9 @@
         }
 
         function goToJourneyPage() {
-            window.location.href = "journey.html";
+            const productId = getProductId();
+            const batchId = localStorage.getItem("trustbiteBatchId") || "";
+            window.location.href = "journey.html?id=" + encodeURIComponent(productId) + "&batchId=" + encodeURIComponent(batchId);
         }
     </script>
 </head>
@@ -95,11 +130,15 @@
     <h2>TrustBite QR Code Generated</h2>
 
     <div id="qrcode"></div>
+
+    <p class="note">Scan this QR code to open the product traceability page.</p>
     <p id="qrText"></p>
 
-    <a id="downloadLink" class="download-btn" download="trustbite-qr.png">Download QR Code</a>
-    <button class="secondary" onclick="addAnotherProduct()">Add Another Product</button>
-    <button onclick="goToJourneyPage()">Log Journey Event</button>
+    <div class="button-group">
+        <a id="downloadLink" class="download-btn" download="trustbite-qr.png">Download QR Code</a>
+        <button class="secondary" onclick="addAnotherProduct()">Add Another Product</button>
+        <button onclick="goToJourneyPage()">Log Journey Event</button>
+    </div>
 </div>
 
 </body>
