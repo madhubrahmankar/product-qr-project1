@@ -70,19 +70,30 @@
     </style>
 
     <script>
-        async function submitData() {
-            const productName = document.getElementById("productName").value;
-            const batchId = document.getElementById("batchId").value;
-            const manufacturerName = document.getElementById("manufacturerName").value;
-            const facilityLocation = document.getElementById("facilityLocation").value;
-            const productDescription = document.getElementById("productDescription").value;
-            const price = document.getElementById("price").value;
-            const contactInfo = document.getElementById("contactInfo").value;
+        function generateProductId() {
+            return "TB" + Date.now();
+        }
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbwcIESdIpu9pKr11JdtOEdu3to3-VGdBke0JbaC4NV-2MPx32O3oky6hE69iEaaIgqw/exec";
+        async function submitData() {
+            const productId = generateProductId();
+            const productName = document.getElementById("productName").value.trim();
+            const batchId = document.getElementById("batchId").value.trim();
+            const manufacturerName = document.getElementById("manufacturerName").value.trim();
+            const facilityLocation = document.getElementById("facilityLocation").value.trim();
+            const productDescription = document.getElementById("productDescription").value.trim();
+            const price = document.getElementById("price").value.trim();
+            const contactInfo = document.getElementById("contactInfo").value.trim();
+
+            if (!productName || !batchId || !manufacturerName || !facilityLocation || !productDescription || !price || !contactInfo) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const scriptURL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
 
             const formData = new URLSearchParams();
             formData.append("action", "createProduct");
+            formData.append("productId", productId);
             formData.append("productName", productName);
             formData.append("batchId", batchId);
             formData.append("manufacturerName", manufacturerName);
@@ -92,19 +103,14 @@
             formData.append("contactInfo", contactInfo);
 
             try {
-                const response = await fetch(scriptURL, {
+                await fetch(scriptURL, {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    mode: "no-cors"
                 });
 
-                const result = await response.json();
-
-                if (result.status === "success") {
-                    localStorage.setItem("trustbiteProductId", result.productId);
-                    window.location.href = "qr.html";
-                } else {
-                    alert("Product could not be created.");
-                }
+                localStorage.setItem("trustbiteProductId", productId);
+                window.location.href = "qr.html";
             } catch (error) {
                 console.error(error);
                 alert("Error while creating product.");
@@ -118,26 +124,26 @@
     <h1>TrustBite</h1>
     <p>Create a new traceable product record</p>
 
-    <label>Product Name</label>
-    <input type="text" id="productName">
+    <label for="productName">Product Name</label>
+    <input type="text" id="productName" placeholder="Enter product name">
 
-    <label>Batch ID</label>
-    <input type="text" id="batchId">
+    <label for="batchId">Batch ID</label>
+    <input type="text" id="batchId" placeholder="Enter batch ID">
 
-    <label>Manufacturer Name</label>
-    <input type="text" id="manufacturerName">
+    <label for="manufacturerName">Manufacturer Name</label>
+    <input type="text" id="manufacturerName" placeholder="Enter manufacturer name">
 
-    <label>Facility Location</label>
-    <input type="text" id="facilityLocation">
+    <label for="facilityLocation">Facility Location</label>
+    <input type="text" id="facilityLocation" placeholder="Enter facility location">
 
-    <label>Product Description</label>
-    <textarea id="productDescription"></textarea>
+    <label for="productDescription">Product Description</label>
+    <textarea id="productDescription" placeholder="Enter product description"></textarea>
 
-    <label>Price</label>
-    <input type="text" id="price">
+    <label for="price">Price</label>
+    <input type="text" id="price" placeholder="Enter price">
 
-    <label>Contact Info</label>
-    <input type="text" id="contactInfo">
+    <label for="contactInfo">Contact Info</label>
+    <input type="text" id="contactInfo" placeholder="Enter contact information">
 
     <button onclick="submitData()">Create Product</button>
 </div>
