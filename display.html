@@ -84,7 +84,7 @@
     </style>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWZb3QosjMTiICU4T_bwMnoJg8fHMQL6gYrfuiXasNXamgqU-peazxdIh713H0Ya9O/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1iCS3BwIQgTgNdmfTckwCAccO5ku5yJVfi-u8OuHW2WZd6tz3mPv8RTvaMFDlFITy/exec";
 
         function getProductId() {
             const params = new URLSearchParams(window.location.search);
@@ -114,8 +114,8 @@
                         const row = document.createElement("tr");
                         row.innerHTML =
                             "<td>" + (journey.stage || "") + "</td>" +
-                            "<td>" + (journey.date || "") + "</td>" +
-                            "<td>" + (journey.time || "") + "</td>" +
+                            "<td>" + (journey.date || "").trim() + "</td>" +
+                            "<td>" + (journey.time || "").trim() + "</td>" +
                             "<td>" + (journey.nfcTagId || "") + "</td>" +
                             "<td>" + (journey.operator || "") + "</td>" +
                             "<td>" + (journey.notes || "") + "</td>";
