@@ -25,6 +25,11 @@
             margin-bottom: 25px;
         }
 
+        h2 {
+            margin-top: 35px;
+            color: #1e3a5f;
+        }
+
         .item {
             margin-bottom: 18px;
         }
@@ -33,6 +38,7 @@
             font-weight: bold;
             margin-bottom: 5px;
             display: block;
+            color: #333;
         }
 
         .value {
@@ -40,22 +46,40 @@
             padding: 12px;
             border-radius: 8px;
             font-size: 16px;
+            color: #111;
+            line-height: 1.5;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
+            vertical-align: top;
         }
 
         th {
             background: #eaf1f8;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 80px;
+            font-size: 22px;
+            color: #444;
+        }
+
+        .empty-note {
+            margin-top: 15px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #555;
         }
     </style>
 
@@ -63,10 +87,19 @@
         async function loadProduct() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get("id");
-            const scriptURL = "https://script.google.com/macros/s/AKfycbyfIxjlble3Fiqd67nD6aN-O7T7FTwVbMVyYGlHy4Obtd0STo--rhXAEYnQEaGZFVnK/exec";
+
+            const scriptURL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+
+            if (!productId) {
+                document.body.innerHTML = "<div class='message'>Product ID is missing in the URL.</div>";
+                return;
+            }
 
             try {
-                const response = await fetch(scriptURL + "?action=getProduct&id=" + encodeURIComponent(productId));
+                const response = await fetch(
+                    scriptURL + "?action=getProduct&id=" + encodeURIComponent(productId)
+                );
+
                 const result = await response.json();
 
                 if (result.status === "success" && result.product) {
@@ -80,24 +113,35 @@
                     document.getElementById("contactInfo").innerText = result.product.contactInfo || "";
 
                     const journeyTable = document.getElementById("journeyTableBody");
+                    const noJourneyMessage = document.getElementById("noJourneyMessage");
+
                     journeyTable.innerHTML = "";
 
-                    result.journeys.forEach(function(journey) {
-                        const row = document.createElement("tr");
-                        row.innerHTML =
-                            "<td>" + (journey.stage || "") + "</td>" +
-                            "<td>" + (journey.timestamp || "") + "</td>" +
-                            "<td>" + (journey.nfcTagId || "") + "</td>" +
-                            "<td>" + (journey.operator || "") + "</td>" +
-                            "<td>" + (journey.notes || "") + "</td>";
-                        journeyTable.appendChild(row);
-                    });
+                    if (result.journeys && result.journeys.length > 0) {
+                        noJourneyMessage.style.display = "none";
+
+                        result.journeys.forEach(function(journey) {
+                            const row = document.createElement("tr");
+
+                            row.innerHTML =
+                                "<td>" + (journey.stage || "") + "</td>" +
+                                "<td>" + (journey.date || "") + "</td>" +
+                                "<td>" + (journey.time || "") + "</td>" +
+                                "<td>" + (journey.nfcTagId || "") + "</td>" +
+                                "<td>" + (journey.operator || "") + "</td>" +
+                                "<td>" + (journey.notes || "") + "</td>";
+
+                            journeyTable.appendChild(row);
+                        });
+                    } else {
+                        noJourneyMessage.style.display = "block";
+                    }
                 } else {
-                    document.body.innerHTML = "<h2 style='text-align:center;margin-top:80px;'>Product not found</h2>";
+                    document.body.innerHTML = "<div class='message'>Product not found.</div>";
                 }
             } catch (error) {
                 console.error(error);
-                document.body.innerHTML = "<h2 style='text-align:center;margin-top:80px;'>Error loading product</h2>";
+                document.body.innerHTML = "<div class='message'>Error loading product details.</div>";
             }
         }
     </script>
@@ -107,21 +151,58 @@
 <div class="container">
     <h1>TrustBite Traceability Details</h1>
 
-    <div class="item"><span class="label">Product ID</span><div id="productId" class="value"></div></div>
-    <div class="item"><span class="label">Product Name</span><div id="productName" class="value"></div></div>
-    <div class="item"><span class="label">Batch ID</span><div id="batchId" class="value"></div></div>
-    <div class="item"><span class="label">Manufacturer Name</span><div id="manufacturerName" class="value"></div></div>
-    <div class="item"><span class="label">Facility Location</span><div id="facilityLocation" class="value"></div></div>
-    <div class="item"><span class="label">Product Description</span><div id="productDescription" class="value"></div></div>
-    <div class="item"><span class="label">Price</span><div id="price" class="value"></div></div>
-    <div class="item"><span class="label">Contact Info</span><div id="contactInfo" class="value"></div></div>
+    <div class="item">
+        <span class="label">Product ID</span>
+        <div id="productId" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Product Name</span>
+        <div id="productName" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Batch ID</span>
+        <div id="batchId" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Manufacturer Name</span>
+        <div id="manufacturerName" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Facility Location</span>
+        <div id="facilityLocation" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Product Description</span>
+        <div id="productDescription" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Price</span>
+        <div id="price" class="value"></div>
+    </div>
+
+    <div class="item">
+        <span class="label">Contact Info</span>
+        <div id="contactInfo" class="value"></div>
+    </div>
 
     <h2>Journey Details</h2>
+
+    <div id="noJourneyMessage" class="empty-note" style="display:none;">
+        No journey records have been added yet.
+    </div>
+
     <table>
         <thead>
             <tr>
                 <th>Stage</th>
-                <th>Timestamp</th>
+                <th>Date</th>
+                <th>Time</th>
                 <th>NFC Tag ID</th>
                 <th>Operator</th>
                 <th>Notes</th>
