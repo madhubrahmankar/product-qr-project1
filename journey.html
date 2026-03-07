@@ -11,7 +11,7 @@
         }
 
         .container {
-            width: 550px;
+            width: 560px;
             margin: 50px auto;
             background: white;
             padding: 30px;
@@ -56,18 +56,36 @@
             font-size: 16px;
             cursor: pointer;
         }
+
+        button:hover {
+            background: #005ecb;
+        }
     </style>
 
     <script>
-        async function logJourney() {
-            const productId = document.getElementById("productId").value;
-            const batchId = document.getElementById("batchId").value;
-            const stage = document.getElementById("stage").value;
-            const nfcTagId = document.getElementById("nfcTagId").value;
-            const operator = document.getElementById("operator").value;
-            const notes = document.getElementById("notes").value;
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3yE0CKy845xkTJhPFIWAdBEcvpXf5YrAxBObUDv2E2p4PlElH-0Gr8IAbhmDe31gZ/exec";
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbxfB-LX99Typy9ZIJ4jyJ3KkPquvTJTHVyrKc-gEgUV_6NutQurlg4wCCaNp5RKgAnE/exec";
+        function fillProductInfo() {
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get("id") || localStorage.getItem("trustbiteProductId") || "";
+            const batchId = params.get("batchId") || localStorage.getItem("trustbiteBatchId") || "";
+
+            document.getElementById("productId").value = productId;
+            document.getElementById("batchId").value = batchId;
+        }
+
+        async function logJourney() {
+            const productId = document.getElementById("productId").value.trim();
+            const batchId = document.getElementById("batchId").value.trim();
+            const stage = document.getElementById("stage").value;
+            const nfcTagId = document.getElementById("nfcTagId").value.trim();
+            const operator = document.getElementById("operator").value.trim();
+            const notes = document.getElementById("notes").value.trim();
+
+            if (!productId || !batchId || !stage || !nfcTagId || !operator) {
+                alert("Please fill in Product ID, Batch ID, Stage, NFC Tag ID, and Operator.");
+                return;
+            }
 
             const formData = new URLSearchParams();
             formData.append("action", "logJourney");
@@ -79,43 +97,35 @@
             formData.append("notes", notes);
 
             try {
-                const response = await fetch(scriptURL, {
+                await fetch(SCRIPT_URL, {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    mode: "no-cors"
                 });
 
-                const result = await response.json();
-
-                if (result.status === "success") {
-                    alert("Journey event recorded successfully.");
-                    document.getElementById("notes").value = "";
-                } else {
-                    alert("Could not record journey event.");
-                }
+                alert("Journey event recorded successfully.");
+                document.getElementById("nfcTagId").value = "";
+                document.getElementById("operator").value = "";
+                document.getElementById("notes").value = "";
             } catch (error) {
                 console.error(error);
                 alert("Error while recording journey event.");
             }
         }
-
-        function fillLastProductId() {
-            const lastId = localStorage.getItem("trustbiteProductId") || "";
-            document.getElementById("productId").value = lastId;
-        }
     </script>
 </head>
-<body onload="fillLastProductId()">
+<body onload="fillProductInfo()">
 
 <div class="container">
     <h1>TrustBite Journey Logger</h1>
 
-    <label>Product ID</label>
-    <input type="text" id="productId">
+    <label for="productId">Product ID</label>
+    <input type="text" id="productId" placeholder="Enter product ID">
 
-    <label>Batch ID</label>
-    <input type="text" id="batchId">
+    <label for="batchId">Batch ID</label>
+    <input type="text" id="batchId" placeholder="Enter batch ID">
 
-    <label>Stage</label>
+    <label for="stage">Stage</label>
     <select id="stage">
         <option value="Harvest">Harvest</option>
         <option value="Packed">Packed</option>
@@ -123,14 +133,14 @@
         <option value="Retail Shelf">Retail Shelf</option>
     </select>
 
-    <label>NFC Tag ID</label>
-    <input type="text" id="nfcTagId">
+    <label for="nfcTagId">NFC Tag ID</label>
+    <input type="text" id="nfcTagId" placeholder="Enter NFC tag ID">
 
-    <label>Operator</label>
-    <input type="text" id="operator">
+    <label for="operator">Operator</label>
+    <input type="text" id="operator" placeholder="Enter operator name">
 
-    <label>Notes</label>
-    <textarea id="notes"></textarea>
+    <label for="notes">Notes</label>
+    <textarea id="notes" placeholder="Optional notes"></textarea>
 
     <button onclick="logJourney()">Record Journey Event</button>
 </div>
