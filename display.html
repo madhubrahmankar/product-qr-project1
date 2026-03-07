@@ -63,7 +63,7 @@
         async function loadProduct() {
             const params = new URLSearchParams(window.location.search);
             const productId = params.get("id");
-            const scriptURL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbwcIESdIpu9pKr11JdtOEdu3to3-VGdBke0JbaC4NV-2MPx32O3oky6hE69iEaaIgqw/exec";
 
             try {
                 const response = await fetch(scriptURL + "?action=getProduct&id=" + encodeURIComponent(productId));
