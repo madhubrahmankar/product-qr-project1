@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TrustBite Journey Logger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 550px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cfcfcf;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        async function logJourney() {
+            const productId = document.getElementById("productId").value;
+            const batchId = document.getElementById("batchId").value;
+            const stage = document.getElementById("stage").value;
+            const nfcTagId = document.getElementById("nfcTagId").value;
+            const operator = document.getElementById("operator").value;
+            const notes = document.getElementById("notes").value;
+
+            const scriptURL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+
+            const formData = new URLSearchParams();
+            formData.append("action", "logJourney");
+            formData.append("productId", productId);
+            formData.append("batchId", batchId);
+            formData.append("stage", stage);
+            formData.append("nfcTagId", nfcTagId);
+            formData.append("operator", operator);
+            formData.append("notes", notes);
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    alert("Journey event recorded successfully.");
+                    document.getElementById("notes").value = "";
+                } else {
+                    alert("Could not record journey event.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error while recording journey event.");
+            }
+        }
+
+        function fillLastProductId() {
+            const lastId = localStorage.getItem("trustbiteProductId") || "";
+            document.getElementById("productId").value = lastId;
+        }
+    </script>
+</head>
+<body onload="fillLastProductId()">
+
+<div class="container">
+    <h1>TrustBite Journey Logger</h1>
+
+    <label>Product ID</label>
+    <input type="text" id="productId">
+
+    <label>Batch ID</label>
+    <input type="text" id="batchId">
+
+    <label>Stage</label>
+    <select id="stage">
+        <option value="Harvest">Harvest</option>
+        <option value="Packed">Packed</option>
+        <option value="Transported">Transported</option>
+        <option value="Retail Shelf">Retail Shelf</option>
+    </select>
+
+    <label>NFC Tag ID</label>
+    <input type="text" id="nfcTagId">
+
+    <label>Operator</label>
+    <input type="text" id="operator">
+
+    <label>Notes</label>
+    <textarea id="notes"></textarea>
+
+    <button onclick="logJourney()">Record Journey Event</button>
+</div>
+
+</body>
+</html>
