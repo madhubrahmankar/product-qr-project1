@@ -51,7 +51,8 @@
         .container,
         .hero,
         .content,
-        .journey-section {
+        .journey-section,
+        .rating-section {
             position: relative;
             z-index: 1;
         }
@@ -98,18 +99,6 @@
             pointer-events: none;
         }
 
-        .hero-fruits span:nth-child(1) {
-            transform: rotate(-10deg) translateY(4px);
-        }
-
-        .hero-fruits span:nth-child(2) {
-            transform: rotate(8deg);
-        }
-
-        .hero-fruits span:nth-child(3) {
-            transform: rotate(-6deg) translateY(8px);
-        }
-
         .logo-row {
             display: flex;
             align-items: center;
@@ -129,7 +118,6 @@
             align-items: center;
             justify-content: center;
             font-size: 28px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
         }
 
         .logo-text-wrap {
@@ -168,7 +156,7 @@
 
         .hero h1 {
             margin: 0;
-            font-size: 38px;
+            font-size: 42px;
             line-height: 1.08;
             font-weight: 700;
             position: relative;
@@ -237,7 +225,8 @@
             word-break: break-word;
         }
 
-        .journey-section {
+        .journey-section,
+        .rating-section {
             margin-top: 34px;
             padding: 26px 24px 24px;
             background: linear-gradient(135deg, #f3fbf3, #fff8ee);
@@ -245,13 +234,15 @@
             border-radius: 24px;
         }
 
-        .journey-title {
+        .journey-title,
+        .rating-title {
             margin: 0;
             font-size: 24px;
             color: #24543a;
         }
 
-        .journey-subtitle {
+        .journey-subtitle,
+        .rating-subtitle {
             margin: 10px 0 0;
             color: #627465;
             font-size: 15px;
@@ -305,12 +296,79 @@
             line-height: 1.55;
         }
 
-        tbody tr:hover {
-            background: #fcfefb;
-        }
-
         tbody tr:last-child td {
             border-bottom: none;
+        }
+
+        .rating-summary {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.75);
+            border: 1px solid #e3ece0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .rating-box-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #61806a;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .rating-box-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #24543a;
+        }
+
+        .stars {
+            margin-top: 20px;
+            font-size: 34px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #c8d2c6;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+
+        .star.active {
+            color: #f0b24d;
+        }
+
+        .star:hover {
+            transform: scale(1.08);
+        }
+
+        .rating-actions {
+            margin-top: 18px;
+        }
+
+        .rating-btn {
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2f7d4a 0%, #5fa04f 55%, #e6a34f 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 14px 20px;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(72, 126, 67, 0.18);
+        }
+
+        .rating-message {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #446255;
+            min-height: 20px;
         }
 
         .message-shell {
@@ -331,59 +389,41 @@
         }
 
         @media (max-width: 860px) {
-            body::before,
-            body::after {
-                font-size: 78px;
-            }
-
-            .hero {
-                padding: 28px 22px 24px;
-            }
-
             .hero h1 {
-                font-size: 31px;
+                font-size: 34px;
             }
 
-            .logo-row {
-                align-items: flex-start;
-            }
-
-            .logo-mark {
-                width: 52px;
-                height: 52px;
-                font-size: 24px;
-            }
-
-            .logo-title {
-                font-size: 24px;
-            }
-
-            .hero-fruits {
-                font-size: 26px;
-                right: 16px;
-                top: 14px;
-            }
-
-            .content {
-                padding: 24px 20px 28px;
-            }
-
-            .details-grid {
+            .details-grid,
+            .rating-summary {
                 grid-template-columns: 1fr;
             }
 
-            .journey-section {
-                padding: 22px 18px 20px;
+            .stars {
+                font-size: 30px;
             }
         }
     </style>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhyF0FljfNwsu69YDL2wOk6TrlJlMpo-6BxFHSlZBIiorUt6BKAIV4ZQN7OoQKRymM/exec";
+        let currentProductId = "";
+        let selectedRating = 0;
 
         function getProductId() {
             const params = new URLSearchParams(window.location.search);
             return params.get("id") || "";
+        }
+
+        function setRating(value) {
+            selectedRating = value;
+            const stars = document.querySelectorAll(".star");
+            stars.forEach((star, index) => {
+                if (index < value) {
+                    star.classList.add("active");
+                } else {
+                    star.classList.remove("active");
+                }
+            });
         }
 
         function handleProductResponse(result) {
@@ -399,7 +439,6 @@
 
                 const journeyTable = document.getElementById("journeyTableBody");
                 const noJourneyMessage = document.getElementById("noJourneyMessage");
-
                 journeyTable.innerHTML = "";
 
                 if (result.journeys && result.journeys.length > 0) {
@@ -418,22 +457,64 @@
                 } else {
                     noJourneyMessage.style.display = "block";
                 }
+
+                loadRatingSummary();
             } else {
                 document.body.innerHTML = "<div class='message-shell'><div class='message'>Product not found.</div></div>";
             }
         }
 
-        function loadProduct() {
-            const productId = getProductId();
+        function handleRatingSummary(result) {
+            if (result.status === "success") {
+                document.getElementById("totalRatings").innerText = result.totalRatings || 0;
+                document.getElementById("averageRating").innerText = result.averageRating || "0.0";
+            }
+        }
 
-            if (!productId) {
+        function loadRatingSummary() {
+            const script = document.createElement("script");
+            script.src = SCRIPT_URL +
+                "?action=getRatingSummary&id=" + encodeURIComponent(currentProductId) +
+                "&callback=handleRatingSummary";
+            document.body.appendChild(script);
+        }
+
+        async function submitRating() {
+            if (!selectedRating) {
+                document.getElementById("ratingMessage").innerText = "Please select a star rating first.";
+                return;
+            }
+
+            const formData = new URLSearchParams();
+            formData.append("action", "submitRating");
+            formData.append("productId", currentProductId);
+            formData.append("rating", selectedRating);
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: formData,
+                    mode: "no-cors"
+                });
+
+                document.getElementById("ratingMessage").innerText = "Thank you. Your rating was submitted.";
+                setTimeout(loadRatingSummary, 700);
+            } catch (error) {
+                document.getElementById("ratingMessage").innerText = "Could not submit rating.";
+            }
+        }
+
+        function loadProduct() {
+            currentProductId = getProductId();
+
+            if (!currentProductId) {
                 document.body.innerHTML = "<div class='message-shell'><div class='message'>Product ID is missing in the URL.</div></div>";
                 return;
             }
 
             const script = document.createElement("script");
             script.src = SCRIPT_URL +
-                "?action=getProduct&id=" + encodeURIComponent(productId) +
+                "?action=getProduct&id=" + encodeURIComponent(currentProductId) +
                 "&callback=handleProductResponse";
 
             script.onerror = function() {
@@ -542,6 +623,38 @@
                             <tbody id="journeyTableBody"></tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="rating-section">
+                    <h2 class="rating-title">Customer Rating</h2>
+                    <p class="rating-subtitle">
+                        Rate this product from 1 to 5 stars. 1 means low and 5 means high.
+                    </p>
+
+                    <div class="rating-summary">
+                        <div>
+                            <div class="rating-box-label">Total Ratings</div>
+                            <div id="totalRatings" class="rating-box-value">0</div>
+                        </div>
+                        <div>
+                            <div class="rating-box-label">Average Rating</div>
+                            <div id="averageRating" class="rating-box-value">0.0</div>
+                        </div>
+                    </div>
+
+                    <div class="stars">
+                        <span class="star" onclick="setRating(1)">★</span>
+                        <span class="star" onclick="setRating(2)">★</span>
+                        <span class="star" onclick="setRating(3)">★</span>
+                        <span class="star" onclick="setRating(4)">★</span>
+                        <span class="star" onclick="setRating(5)">★</span>
+                    </div>
+
+                    <div class="rating-actions">
+                        <button class="rating-btn" onclick="submitRating()">Submit Rating</button>
+                    </div>
+
+                    <div id="ratingMessage" class="rating-message"></div>
                 </div>
             </div>
         </div>
