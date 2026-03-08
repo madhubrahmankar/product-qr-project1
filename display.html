@@ -18,6 +18,42 @@
                 linear-gradient(180deg, #f6fbf5 0%, #eef8f1 42%, #f8fcf8 100%);
             color: #1f3a2a;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.08;
+            font-size: 110px;
+            line-height: 1;
+            filter: blur(0.2px);
+        }
+
+        body::before {
+            content: "🍎 🥕 🥬";
+            top: 30px;
+            left: 22px;
+            transform: rotate(-10deg);
+        }
+
+        body::after {
+            content: "🍊 🍇 🌽";
+            bottom: 26px;
+            right: 24px;
+            transform: rotate(8deg);
+        }
+
+        .page,
+        .container,
+        .hero,
+        .content,
+        .journey-section {
+            position: relative;
+            z-index: 1;
         }
 
         .page {
@@ -40,6 +76,7 @@
             padding: 36px 34px 30px;
             background: linear-gradient(135deg, #2f7d4a 0%, #68a357 52%, #f2b35d 100%);
             color: white;
+            overflow: hidden;
         }
 
         .hero::after {
@@ -48,6 +85,72 @@
             inset: 0;
             background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0));
             pointer-events: none;
+        }
+
+        .hero-fruits {
+            position: absolute;
+            right: 22px;
+            top: 18px;
+            display: flex;
+            gap: 12px;
+            opacity: 0.18;
+            font-size: 34px;
+            pointer-events: none;
+        }
+
+        .hero-fruits span:nth-child(1) {
+            transform: rotate(-10deg) translateY(4px);
+        }
+
+        .hero-fruits span:nth-child(2) {
+            transform: rotate(8deg);
+        }
+
+        .hero-fruits span:nth-child(3) {
+            transform: rotate(-6deg) translateY(8px);
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-mark {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .logo-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .logo-title {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            color: white;
+            margin: 0;
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 0.4px;
+            margin: 0;
         }
 
         .brand-badge {
@@ -59,6 +162,8 @@
             font-size: 13px;
             letter-spacing: 0.4px;
             margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
@@ -66,6 +171,8 @@
             font-size: 38px;
             line-height: 1.08;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
 
         .hero p {
@@ -74,6 +181,8 @@
             color: rgba(255,255,255,0.92);
             font-size: 16px;
             line-height: 1.6;
+            position: relative;
+            z-index: 1;
         }
 
         .content {
@@ -222,12 +331,37 @@
         }
 
         @media (max-width: 860px) {
+            body::before,
+            body::after {
+                font-size: 78px;
+            }
+
             .hero {
                 padding: 28px 22px 24px;
             }
 
             .hero h1 {
                 font-size: 31px;
+            }
+
+            .logo-row {
+                align-items: flex-start;
+            }
+
+            .logo-mark {
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
+            }
+
+            .logo-title {
+                font-size: 24px;
+            }
+
+            .hero-fruits {
+                font-size: 26px;
+                right: 16px;
+                top: 14px;
             }
 
             .content {
@@ -314,7 +448,21 @@
     <div class="page">
         <div class="container">
             <div class="hero">
-                <div class="brand-badge">Fresh Food Transparency</div>
+                <div class="hero-fruits">
+                    <span>🍇</span>
+                    <span>🥕</span>
+                    <span>🍊</span>
+                </div>
+
+                <div class="logo-row">
+                    <div class="logo-mark">🍃</div>
+                    <div class="logo-text-wrap">
+                        <div class="logo-title">TrustBite</div>
+                        <div class="logo-tagline">Fresh Food Traceability Platform</div>
+                    </div>
+                </div>
+
+                <div class="brand-badge">Verified Product Journey</div>
                 <h1>TrustBite Traceability Details</h1>
                 <p>
                     View the registered product identity, origin information, and journey-stage
